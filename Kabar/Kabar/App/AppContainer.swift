@@ -10,7 +10,10 @@ import SwiftData
 
 struct AppContainer: View {
     var body: some View {
+        
+        OnBoardingView()
     }
+    
         
 }
 
