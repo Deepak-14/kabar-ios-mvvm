@@ -8,65 +8,121 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State var loginViewModel = LoginViewModel()
+    @Binding var path: NavigationPath
+    @State var isValid: Bool = false
+    @State private var isPasswordVisible = false
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        VStack(alignment: .leading){
-             
-            //Set Top Text Design
-            LoginTitle()
+            VStack(alignment: .leading){
+                 
+                //Set Top Text Design
+                LoginTitle()
 
-            Spacer()
-            
-            //Set Email Group
-            Group{
-                Text(AppMessages.textLoginUsername)
-                    .modifier(TextFieldTitledModifier())
-                TextField("Email", text: .constant(""))
-                    .modifier(TextFieldModifier())
-                    .padding(.bottom,20)
-            }
-            
-            //Set Passeord Group
-            Group{
-                Text(AppMessages.textLoginPassword)
-                    .modifier(TextFieldTitledModifier())
-                TextField("Password", text: .constant(""))
-                    .modifier(TextFieldModifier())
-            }
-            
-            //Set Forgot Paaword Section
-            HStack{
                 Spacer()
-                Button {
-                    
-                } label: {
-                    Text(AppMessages.textLoginForgotPassword)
-                        .foregroundColor(.colorBlue)
-                }
-
                 
+                //Set Email Group
+                Group{
+                    Text(AppMessages.textLoginUsername)
+                        .modifier(TextFieldTitledModifier())
+                    TextField("Email", text: $loginViewModel.email)
+                        .keyboardType(.emailAddress)
+                        .frame(height: 48)
+                        .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(.colorGrayPurple, lineWidth: 1) // Border color and thickness
+                            )
+                        .padding([.leading,.trailing],24)
+                }
+                
+                
+                VStack (alignment: .leading){
+                    //Set Passeord Group
+                    Text(AppMessages.textLoginPassword)
+                        .modifier(TextFieldTitledModifier())
+                    HStack(alignment: .center){
+                        if isPasswordVisible {
+                            TextField("Password", text: $loginViewModel.password)
+                                
+                                .keyboardType(.default)
+                        } else {
+                            SecureField("Password", text: $loginViewModel.password)
+                                .keyboardType(.default)
+                        }
+                        
+                        Button {
+                            isPasswordVisible.toggle()
+                        } label: {
+                            Image(systemName: isPasswordVisible
+                                  ? "eye.slash"
+                                  : "eye")
+                            .foregroundStyle(.gray)
+                        }
+                        .padding(.trailing, 10)
+                    }.padding(.zero)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(.colorGrayPurple, lineWidth: 1) // Border color and thickness
+                            )
+                        .padding([.leading,.trailing],24)
+                        
+                }
+                //Set Forgot Paaword Section
+                HStack{
+                    Spacer()
+                    Button {
+                        
+                    } label: {
+                        Text(AppMessages.textLoginForgotPassword)
+                            .foregroundColor(.colorBlue)
+                    }
+
+                    
+                }
+                .padding(.trailing,24)
+                .padding(.top,10)
+                
+               
+                Spacer()
+                //Set Botton Login Button
+               
+                Button {
+                    isValid = !loginViewModel.validate()
+                    if !isValid{
+                        loginViewModel.createUser(email: loginViewModel.email, password: loginViewModel.password, completion: { isSuccess in
+                            guard isSuccess else {
+                                return
+                            }
+                            appState.setUserLogin(isLogin: true)
+
+                            path.append(AuthRoute.dashboard)
+                            
+                        })
+                    }
+                } label: {
+                    Text("Login")
+                        .foregroundColor(.colorWhite)
+                        .frame(minWidth: 300,maxWidth: .infinity,maxHeight: 48)
+                }
+                .background(.colorBlue)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 6)
+                )
+                .padding(.leading,24)
+                .padding(.trailing,24)
+                Spacer()
             }
-            .padding(.trailing,24)
-            .padding(.top,10)
-            
-           
-            Spacer()
-            //Set Botton Login Button
-           
-            Button {
-                MainTabView()
-            } label: {
-                Text("Login")
-                    .foregroundColor(.colorWhite)
-                    .frame(minWidth: 300,maxWidth: .infinity,maxHeight: 48)
-            }
-            .background(.colorBlue)
-            .clipShape(
-                RoundedRectangle(cornerRadius: 6)
-            )
-            .padding(.leading,24)
-            .padding(.trailing,24)
-            Spacer()
-        }
+            .alert("Alert", isPresented: $isValid, actions: {
+                Button("OK",role: .cancel) {
+                    isValid = false
+                }
+            }, message: {
+                Text((loginViewModel.emailError ?? "") + (loginViewModel.passwordError ?? ""))
+            })
+
     }
 }
 
@@ -80,7 +136,7 @@ struct TextFieldModifier: ViewModifier {
                     RoundedRectangle(cornerRadius: 6)
                         .stroke(.colorGrayPurple, lineWidth: 1) // Border color and thickness
                 )
-            .padding([.leading,.trailing],24)
+            .padding([.leading],24)
     }
 }
 
@@ -119,5 +175,7 @@ struct LoginTitle: View {
     }
 }
 #Preview {
-    LoginView()
+    @Previewable @State var path = NavigationPath()
+    @Previewable @State var isValid = false
+    LoginView(loginViewModel: LoginViewModel(), path: $path)
 }

@@ -9,9 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct AppContainer: View {
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        
-        OnBoardingView()
+        if appState.isUserLogin {
+            NavigationStack {
+                MainTabView()
+            }
+        } else {
+            OnBoardingView()
+        }
     }
     
         

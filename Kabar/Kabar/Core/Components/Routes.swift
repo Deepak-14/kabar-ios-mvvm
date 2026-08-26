@@ -5,7 +5,12 @@
 //  Created by user on 10/08/26.
 //
 
-enum Route: Hashable {
-    case Login
-    case settings
+enum AuthRoute: Hashable {
+    case login
+    case dashboard
+}
+
+enum AppRoute: Hashable {
+    case newsDetail(Articles)
+    case newsDetailSaved(NewsArticleSave)
 }

@@ -9,9 +9,10 @@ import SwiftUI
 
 struct OnBoardingView: View {
     @State private var pageCount = 0
-    private let views = ["icon_onboarding_1","icon_onboarding_2","icon_onboarding_3"]
-    @State private var path: [Route] = []
 
+    private let views = ["icon_onboarding_1","icon_onboarding_2","icon_onboarding_3"]
+    @State private var path = NavigationPath()
+    
     var body: some View {
         NavigationStack(path: $path){
             VStack{
@@ -59,7 +60,6 @@ struct OnBoardingView: View {
                     }
                     Spacer()
                     
-                    Group{
                         if pageCount > 0 {
                             Button(action: {
                                 pageCount -= 1
@@ -73,8 +73,7 @@ struct OnBoardingView: View {
                         Button(action: {
                             if pageCount >= 2 {
                                 //Navigation Code
-                                path.removeAll()
-                                path.append(.Login)
+                                path.append(AuthRoute.login)
                             }else{
                                 pageCount += 1
                             }
@@ -86,13 +85,20 @@ struct OnBoardingView: View {
                         }
                         .background(.blue)
                         .clipShape(.buttonBorder)
-                    }
                 }.padding(20)
             }.ignoresSafeArea()
-        }.navigationDestination(for: Route.self) { route in
-            
-            LoginView()
+
+            .navigationDestination(for: AuthRoute.self) { route in
+                switch route {
+                    case .login:
+                        LoginView(path: $path)
+                    case .dashboard:
+                        MainTabView()
+                }
+            }
+
         }
+
     }
 }
 

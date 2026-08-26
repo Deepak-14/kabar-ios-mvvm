@@ -7,34 +7,72 @@
 
 import SwiftUI
 
+enum Tab: Hashable {
+    case home
+    case explore
+    case bookmark
+    case profile
+}
+
 struct MainTabView: View {
 
+    @State private var selectedTab: Tab = .home
+    @State private var pathHome = NavigationPath()
+    @State private var pathExplore = NavigationPath()
+    @State private var pathBookMark = NavigationPath()
+//    @State private var pathProfile = NavigationPath()
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
 
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("Home")
-                }
+            NavigationStack(path: $pathHome) {
+                HomeView(path: $pathHome)
+            }.tabItem {
+                Image(
+                    selectedTab == .home
+                        ? "icon_home_selected" : "icon_home_unselected"
+                )
+                Text(AppMessages.textHome)
+            }
+            .tag(Tab.home)
 
-            ExploreView()
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                    Text("Search")
-                }
+            NavigationStack(path: $pathExplore) {
+                ExploreView(path: $pathExplore)
+            }
+            .tabItem {
+                Image(
+                    selectedTab == .explore
+                        ? "icon_explore_selected" : "icon_explore_unselected"
+                )
+                Text(AppMessages.textExplore)
+            }
+            .tag(Tab.explore)
 
-            BookmarkView()
-                .tabItem {
-                    Image(systemName: "person")
-                    Text("Profile")
-                }
-            
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "person")
-                    Text("Profile")
-                }
+            NavigationStack(path: $pathBookMark) {
+                BookmarkView(path: $pathBookMark)
+            }
+
+            .tabItem {
+                Image(
+                    selectedTab == .bookmark
+                        ? "icon_bookmark_select" : "icon_bookmark_unselect"
+                )
+                Text(AppMessages.textBookMark)
+            }
+            .tag(Tab.bookmark)
+
+//            NavigationStack(path: $pathProfile) {
+                ProfileView()
+//            }
+
+            .tabItem {
+                Image(
+                    selectedTab == .profile
+                        ? "icon_profile_selected" : "icon_profile_unselected"
+                )
+                Text(AppMessages.textProfile)
+            }
+            .tag(Tab.profile)
         }
     }
 }

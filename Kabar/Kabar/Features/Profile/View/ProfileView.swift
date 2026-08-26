@@ -8,11 +8,37 @@
 import SwiftUI
 
 struct ProfileView: View {
+//    @Binding var path: NavigationPath
+    @State private var profileViewModel = ProfileViewModel()
+    @State private var isLogout: Bool = false
+    
+    @Environment(AppState.self) private var appState
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            Form{
+                Text("User Email")
+                Button{
+                    userLogout()
+                }label: {
+                    Text(AppMessages.textLogout)
+                }
+            }
+        }
+//        .navigationTitle(AppMessages.textProfile)
+    }
+    
+    func userLogout() {
+        Task{
+            isLogout = await profileViewModel.userLogout()
+            if isLogout{
+                appState.logout()
+            }
+        }
     }
 }
 
-#Preview {
-    ProfileView()
-}
+//#Preview {
+//    @Previewable @State var path = NavigationPath()
+//    ProfileView(path: $path)
+//}

@@ -7,26 +7,39 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCore
+import FirebaseMessaging
+
+
+class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
+  func application(_ application: UIApplication,
+                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    FirebaseApp.configure()
+    return true
+  }
+    
+
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        Messaging.messaging().apnsToken = deviceToken
+        Messaging.messaging().delegate = self
+
+    }
+}
 
 @main
 struct KabarApp: App {
-//    var sharedModelContainer: ModelContainer = {
-//        let schema = Schema([
-//            Item.self,
-//        ])
-//        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-//
-//        do {
-//            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-//        } catch {
-//            fatalError("Could not create ModelContainer: \(error)")
-//        }
-//    }()
+    // register app delegate for Firebase setup
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @State private var appState = AppState()
 
     var body: some Scene {
         WindowGroup {
             AppContainer()
         }
-//        .modelContainer(sharedModelContainer)
+        .modelContainer(for: NewsArticleSave.self)
+        .environment(appState)
     }
 }

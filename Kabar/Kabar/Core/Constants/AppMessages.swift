@@ -30,7 +30,35 @@ struct AppMessages {
     static let textLoginGoogle = "Google"
     static let textLoginDontHaveAccount = "don’t have an account ? Sign Up"
 
-   
+    //Home
+    static let textHome = "Home"
+    static let textSearch = "Search"
+    static let textTranding = "Tranding"
+    static let textSeeAll = "SeeAll"
+    static let textLatest = "Latest"
+    
+    //Explore
+    static let textExplore = "Explore"
+    static let textSave = "Save"
+    static let textSaved = "Saved"
+    static let textTopic = "Topic"
+    static let textPopularTopic = "Popular Topic"
+
+    
+    
+
+    //BookMark
+    static let textBookMark = "BookMark"
+
+    //Profile
+    static let textProfile = "Profile"
+    static let textLogout = "Logout"
+
+    //News Detail
+    static let textFollowing = "Following"
+    static let textFollow = "Follow"
+
+
 }
 
 
