@@ -14,23 +14,7 @@ struct NewsCell: View {
     
     var body: some View{
         HStack{
-            AsyncImage(url: URL(string: imgUrl)) { phase in
-
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                        case .failure:
-                            Image("icon_news_fallback")
-                                .resizable()
-                                .scaledToFill()
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
+            CachedAsyncImage(url: URL(string: imgUrl)) 
             .frame(minWidth: 96,maxWidth: 96,maxHeight: 96)
             .cornerRadius(8)
             .clipped()

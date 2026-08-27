@@ -50,6 +50,9 @@ struct BookmarkView: View {
                 List{
                     ForEach(dbModel.filteredNews) { news in
                         Button {
+                            if path.count > 0{
+                                path.removeLast()
+                            }
                             path.append(AppRoute.newsDetailSaved(news))
                         } label: {
                             NewsCell(imgUrl: news.imageURL ?? "", title: news.title ?? "", newsDescription: news.articleDescription ?? "")

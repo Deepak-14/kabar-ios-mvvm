@@ -63,6 +63,9 @@ struct HomeView: View {
                         ForEach(viewModel.newsData.prefix(1)) { news in
                            
                             Button {
+                                if path.count > 0{
+                                    path.removeLast()
+                                }
                                 path.append(AppRoute.newsDetail(news))
                             } label: {
                                 TrandingNewsCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "",lineLimitDetail: true, lineLimitTitle: true)
@@ -105,6 +108,9 @@ struct HomeView: View {
                             ForEach(viewModel.filteredNews) { news in
                                 
                                 Button {
+                                    if path.count > 0{
+                                        path.removeLast()
+                                    }
                                     path.append(AppRoute.newsDetail(news))
                                 } label: {
                                     NewsCell(
@@ -143,17 +149,10 @@ struct HomeView: View {
         }
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
-        .onAppear{
+        .task {
             dbModel.setModelContext(dbContext)
-            Task{
-               await viewModel.fetchUsers()
-            }
+            viewModel.newsType = "bitcoin"
+            await viewModel.fetchUsersIfNeeded()
         }
-        
     }
 }
-
-//#Preview {
-//    
-//    HomeView(, path: <#Binding<NavigationPath>#>)
-//}

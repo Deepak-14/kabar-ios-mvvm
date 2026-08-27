@@ -15,6 +15,7 @@ struct NewsDetails: View {
     @State private var dbModel = HomeDataBaseViewModel()
     @Environment(\.modelContext) private var dbContext
 
+    @State private var isNewsSaved: Bool = false
     
     var body: some View{
         ScrollView(.vertical){
@@ -55,10 +56,18 @@ struct NewsDetails: View {
                 Spacer()
                 
                 Button {
-                    //Save Data to DB
-                    dbModel.saveNewsData(news: news!)
+                    if isNewsSaved {
+                        //Delete Data to DB
+                        dbModel.deleteNewsData(news?.id ?? UUID())
+
+                    }else{
+                        //Save Data to DB
+                        dbModel.saveNewsData(news: news!)
+                    }
+                    isNewsSaved = (dbModel.fetchNews(by: news?.id ?? UUID()) != nil)
+
                 } label: {
-                    Image("icon_bookmark_select")
+                    Image(isNewsSaved ? "icon_bookmark_select" : "icon_bookmark_unselect")
                 }
                 .padding()
 
@@ -68,6 +77,7 @@ struct NewsDetails: View {
         .toolbar(.hidden, for: .tabBar)
         .onAppear {
             dbModel.setModelContext(dbContext)
+            isNewsSaved = (dbModel.fetchNews(by: news?.id ?? UUID()) != nil)
         }
     }
 }

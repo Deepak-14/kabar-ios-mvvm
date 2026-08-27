@@ -27,10 +27,14 @@ struct ExploreView: View {
                 List{
                     Section {
                         ForEach(viewModel.newsData.prefix(3)) { news in
+                             
                             Button {
+                                if path.count > 0{
+                                    path.removeLast()
+                                }
                                 path.append(AppRoute.newsDetail(news))
                             } label: {
-                                ExploreCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "", isSaved: true) {
+                                ExploreCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "", isSaved: (dbModel.fetchNews(by: news.id) != nil)) {
                                     dbModel.saveNewsData(news: news)
                                 }
                             }
@@ -45,6 +49,9 @@ struct ExploreView: View {
                     Section{
                         ForEach(viewModel.filteredNews) { news in
                             Button {
+                                if path.count > 0{
+                                    path.removeLast()
+                                }
                                 path.append(AppRoute.newsDetail(news))
                             } label: {
                                 TrandingNewsCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "",lineLimitDetail: true, lineLimitTitle: true)

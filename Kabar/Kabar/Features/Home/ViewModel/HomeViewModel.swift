@@ -18,11 +18,21 @@ final class HomeViewModel {
     var errorMessage: String?
     var selectedSource: String = "All"
     var searchText: String = ""
+    var newsType: String = ""
+    private(set) var hasLoaded = false
 
     init(apiService: NetworkManagerProtocol) {
         self.apiService = apiService
     }
 
+    func fetchUsersIfNeeded() async {
+            guard !hasLoaded else {
+                return
+            }
+            await fetchUsers()
+        }
+
+    
     func fetchNews() async {
         isLoading = true
         errorMessage = nil
@@ -31,16 +41,19 @@ final class HomeViewModel {
             isLoading = false
         }
 
-        let url = APIConstant.baseUrl + "everything" + "?q=" + "bitcoin" + "&apiKey=" + APIConstant.apiKey
+        let url = APIConstant.baseUrl + "everything?q=\(newsType)&apiKey=\(APIConstant.apiKey)"
         
-        apiService.getData(NewsModel.self, url: url, methodType: .get) { result in
-            
+        apiService.getData(NewsModel.self, url: url, methodType: .get) { [weak self] result in
+            guard let strongSlef = self else{
+                return
+            }
             switch result{
             case .success(let news):
-                self.newsData = news?.articles ?? []
+                strongSlef.newsData = news?.articles ?? []
+                strongSlef.hasLoaded = true
             case .failure(let error):
                 print("Error fetching news: \(error)")
-                self.errorMessage = error.localizedDescription
+                strongSlef.errorMessage = error.localizedDescription
             }
         }
         

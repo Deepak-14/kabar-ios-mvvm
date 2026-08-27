@@ -6,12 +6,14 @@
 //
 
 import SwiftData
+import SwiftUI
 
 @Model
 final class NewsArticleSave {
-    @Attribute(.unique)
+//    @Attribute(.unique)
+    var id: UUID
+    
     var articleURL: String
-
     var title: String?
     var articleDescription: String?
     var imageURL: String?
@@ -20,6 +22,7 @@ final class NewsArticleSave {
     var content: String?
 
     init(
+        id: UUID,
         articleURL: String,
         title: String?,
         articleDescription: String?,
@@ -28,6 +31,7 @@ final class NewsArticleSave {
         publishedAt: String?,
         content: String?
     ) {
+        self.id = id
         self.articleURL = articleURL
         self.title = title
         self.articleDescription = articleDescription

@@ -27,8 +27,8 @@ final class HomeDataBaseViewModel {
         guard let url = news.url else {
                 return
         }
-
         let article = NewsArticleSave(
+            id: news.id,
             articleURL: url,
             title: news.title,
             articleDescription: news.description,
@@ -41,6 +41,29 @@ final class HomeDataBaseViewModel {
         try? dbContext!.save()
     }
     
+    func deleteNewsData(_ id: UUID) {
+            guard let context = dbContext else {
+                return
+            }
+
+            let descriptor = FetchDescriptor<NewsArticleSave>(
+                predicate: #Predicate { article in
+                    article.id == id
+                }
+            )
+
+            do {
+                if let article = try context.fetch(descriptor).first {
+                    context.delete(article)
+                    try context.save()
+
+                    print("News deleted successfully")
+                }
+            } catch {
+                print("Failed to delete news: \(error)")
+            }
+        }
+    
     func fetchAllNews()  {
         guard let context = dbContext else{
             return
@@ -48,9 +71,28 @@ final class HomeDataBaseViewModel {
         
         let descriptor = FetchDescriptor<NewsArticleSave>(sortBy: [SortDescriptor(\.publishedAt, order: .reverse)])
         do{
-            savedNews = try context.fetch(descriptor)
+            savedNews = try context.fetch(descriptor)            
         }catch{
             print("Failed to fetch\(error)")
+        }
+    }
+    
+    func fetchNews(by id: UUID) -> NewsArticleSave? {
+        guard let context = dbContext else {
+            return nil
+        }
+
+        let descriptor = FetchDescriptor<NewsArticleSave>(
+            predicate: #Predicate { article in
+                article.id == id
+            }
+        )
+
+        do {
+            return try context.fetch(descriptor).first
+        } catch {
+            print("Failed to fetch news: \(error)")
+            return nil
         }
     }
     

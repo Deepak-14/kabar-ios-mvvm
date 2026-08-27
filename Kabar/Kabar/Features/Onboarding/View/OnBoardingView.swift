@@ -73,6 +73,9 @@ struct OnBoardingView: View {
                         Button(action: {
                             if pageCount >= 2 {
                                 //Navigation Code
+                                if path.count > 0{
+                                    path.removeLast()
+                                }
                                 path.append(AuthRoute.login)
                             }else{
                                 pageCount += 1

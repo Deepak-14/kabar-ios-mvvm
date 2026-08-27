@@ -12,6 +12,7 @@ import FirebaseAuth
 @MainActor
 @Observable
 class ProfileViewModel{
+    var email: String = ""
     
     func userLogout() async -> Bool {
         let firebaseAuth = Auth.auth()
@@ -21,6 +22,14 @@ class ProfileViewModel{
         } catch let signOutError as NSError {
           print("Error signing out: %@", signOutError)
             return false
+        }
+    }
+    
+    func fetchUser()  {
+        let user = Auth.auth().currentUser
+        if let user = user {
+          let uid = user.uid
+            email = user.email ?? ""
         }
     }
     

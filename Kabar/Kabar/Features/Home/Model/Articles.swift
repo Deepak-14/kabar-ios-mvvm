@@ -53,8 +53,7 @@ struct Articles : Codable, Identifiable, Hashable {
 
 extension Articles {
     init(savedArticle: NewsArticleSave) {
-
-        self.id = UUID()
+        self.id = savedArticle.id
         self.author = savedArticle.author
         self.title = savedArticle.title
         self.description = savedArticle.articleDescription

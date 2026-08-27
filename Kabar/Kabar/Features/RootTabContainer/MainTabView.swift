@@ -20,7 +20,7 @@ struct MainTabView: View {
     @State private var pathHome = NavigationPath()
     @State private var pathExplore = NavigationPath()
     @State private var pathBookMark = NavigationPath()
-//    @State private var pathProfile = NavigationPath()
+    @State private var pathProfile = NavigationPath()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -61,9 +61,9 @@ struct MainTabView: View {
             }
             .tag(Tab.bookmark)
 
-//            NavigationStack(path: $pathProfile) {
-                ProfileView()
-//            }
+            NavigationStack(path: $pathProfile) {
+                ProfileView(path: $pathProfile)
+            }
 
             .tabItem {
                 Image(

@@ -20,7 +20,7 @@ final class NetworkManager: NetworkManagerProtocol {
         
         var request = URLRequest(url: url)
         request.httpMethod = methodType.rawValue
-        request.setValue(APIConstant.apiKey, forHTTPHeaderField: "X-Api-Key")
+//        request.setValue(APIConstant.apiKey, forHTTPHeaderField: "apiKey")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             

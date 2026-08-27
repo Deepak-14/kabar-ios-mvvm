@@ -97,7 +97,9 @@ struct LoginView: View {
                                 return
                             }
                             appState.setUserLogin(isLogin: true)
-
+                            if path.count > 0{
+                                path.removeLast()
+                            }
                             path.append(AuthRoute.dashboard)
                             
                         })
