@@ -34,7 +34,7 @@ struct ExploreView: View {
                                 }
                                 path.append(AppRoute.newsDetail(news))
                             } label: {
-                                ExploreCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "", isSaved: (dbModel.fetchNews(by: news.id) != nil)) {
+                                ExploreCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "", isSaved: false) {
                                     dbModel.saveNewsData(news: news)
                                 }
                             }
@@ -80,11 +80,10 @@ struct ExploreView: View {
             }
             .navigationTitle(AppMessages.textExplore)
             .navigationBarTitleDisplayMode(.large)
-            .onAppear{
+            .task{
                 dbModel.setModelContext(dbContext)
-                Task{
-                    await viewModel.fetchUsers()
-                }
+                viewModel.newsType = "bitcoin"
+                await viewModel.fetchUsersIfNeeded()
             }
         
     }
