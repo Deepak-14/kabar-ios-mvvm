@@ -22,11 +22,15 @@ struct MainTabView: View {
     @State private var pathBookMark = NavigationPath()
     @State private var pathProfile = NavigationPath()
 
+    
     var body: some View {
         TabView(selection: $selectedTab) {
 
             NavigationStack(path: $pathHome) {
                 HomeView(path: $pathHome)
+                    .navigationDestination(for: AppRoute.self) { route in
+                        destination(for: route)
+                    }
             }.tabItem {
                 Image(
                     selectedTab == .home
@@ -38,6 +42,10 @@ struct MainTabView: View {
 
             NavigationStack(path: $pathExplore) {
                 ExploreView(path: $pathExplore)
+                    .navigationDestination(for: AppRoute.self) { route in
+                        destination(for: route)
+                    }
+                    
             }
             .tabItem {
                 Image(
@@ -50,6 +58,9 @@ struct MainTabView: View {
 
             NavigationStack(path: $pathBookMark) {
                 BookmarkView(path: $pathBookMark)
+                    .navigationDestination(for: AppRoute.self) { route in
+                        destination(for: route)
+                    }
             }
 
             .tabItem {
@@ -74,6 +85,21 @@ struct MainTabView: View {
             }
             .tag(Tab.profile)
         }
+    }
+}
+
+@ViewBuilder
+private func destination(for route: AppRoute) -> some View {
+
+    switch route {
+
+    case .newsDetail(let article):
+        NewsDetails(news: article)
+
+    case .newsDetailSaved(let article):
+        NewsDetails(
+            news: Articles(savedArticle: article)
+        )
     }
 }
 

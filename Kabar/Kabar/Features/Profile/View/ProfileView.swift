@@ -11,10 +11,12 @@ struct ProfileView: View {
     @Binding var path: NavigationPath
     @State private var profileViewModel = ProfileViewModel()
     @State private var isLogout: Bool = false
-    
+    @Environment(HomeViewModel.self) private var viewModel
     @Environment(AppState.self) private var appState
     
     var body: some View {
+        @Bindable var viewModel = viewModel
+        
         VStack{
             Form{
                 Text("User Email \(profileViewModel.email)")

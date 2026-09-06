@@ -13,6 +13,7 @@ import SwiftData
 final class HomeDataBaseViewModel {
     private var dbContext: ModelContext?
 
+    //@Query private var savedNews: [NewsArticleSave]
     var savedNews: [NewsArticleSave] = []
     var searchText: String = ""
 

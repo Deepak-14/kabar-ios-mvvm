@@ -9,15 +9,17 @@ import SwiftUI
 import SwiftData
 
 struct NewsDetails: View {
-    var news: Articles?
-    @Binding var viewModel: HomeViewModel
+    @Environment(HomeViewModel.self) private var viewModel
 
+    var news: Articles?
     @State private var dbModel = HomeDataBaseViewModel()
     @Environment(\.modelContext) private var dbContext
 
     @State private var isNewsSaved: Bool = false
     
     var body: some View{
+        @Bindable var viewModel = viewModel
+        
         ScrollView(.vertical){
             VStack{
                 FollowingCell(imgUrl: news?.urlToImage ?? "", title: news?.title ?? "", newsDescription: news?.description ?? "", isFollowing: false, width: 50)

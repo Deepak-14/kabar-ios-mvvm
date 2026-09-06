@@ -9,53 +9,22 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @State private var viewModel: HomeViewModel
-    @State private var dbModel = HomeDataBaseViewModel()
-    
-    @Binding var path: NavigationPath
+    @Environment(HomeViewModel.self) private var viewModel
     @Environment(\.modelContext) private var dbContext
 
-    init(apiService: NetworkManagerProtocol = NetworkManager(),path: Binding<NavigationPath>) {
-        viewModel = HomeViewModel(apiService: apiService)
+    @State private var dbModel = HomeDataBaseViewModel()
+    @Binding var path: NavigationPath
+
+    init(path: Binding<NavigationPath>) {
         _path = path
     }
     
     var body: some View {
+        @Bindable var viewModel = viewModel
+        
             VStack{
-                // Fixed Top App Icon
-                HStack{
-                    Image("icon_app_logo")
-                    Spacer()
-                    Button {
-                        
-                    } label: {
-                        Image("icon_notification")
-                    }
-                }
-                .padding(.horizontal,24)
-                
-                // Fixed search bar
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    
-                    TextField("Search news", text: $viewModel.searchText)
-                        .textFieldStyle(.plain)
-                    
-                    if !viewModel.searchText.isEmpty {
-                        Button {
-                            viewModel.searchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                
+                //Custom Search Bar
+                CustomSearchBar(searchText: $viewModel.searchText)
                 
                 // News List
                 List{
@@ -133,19 +102,7 @@ struct HomeView: View {
                     .listRowSeparator(.hidden)
                     .listStyle(.plain)
                 }
-            .navigationDestination(for: AppRoute.self) { route in
-                switch route {
-                    case .newsDetail(let article):
-                        NewsDetails(
-                            news: article,
-                            viewModel: $viewModel
-                    )
-                case .newsDetailSaved(let articles):
-                    NewsDetails(
-                        news: Articles(savedArticle: articles),
-                        viewModel: $viewModel)
-                }
-            }
+            
         }
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)

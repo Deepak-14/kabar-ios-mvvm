@@ -21,21 +21,29 @@ struct ExploreView: View {
     }
     
     var body: some View {
+        @Bindable var viewModel = viewModel
+        
             VStack{
                 
                 // News List
                 List{
                     Section {
                         ForEach(viewModel.newsData.prefix(3)) { news in
-                             
+                           @State var isItemSaved = (dbModel.fetchNews(by: news.id) != nil)
                             Button {
                                 if path.count > 0{
                                     path.removeLast()
                                 }
                                 path.append(AppRoute.newsDetail(news))
                             } label: {
-                                ExploreCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "", isSaved: false) {
-                                    dbModel.saveNewsData(news: news)
+                                ExploreCell(imgUrl: news.urlToImage ?? "", title: news.title ?? "", newsDescription: news.description ?? "", isSaved: isItemSaved) {
+                                    isItemSaved = (dbModel.fetchNews(by: news.id) != nil)
+                                    if isItemSaved{
+                                        dbModel.deleteNewsData(news.id)
+                                    }else{
+                                        dbModel.saveNewsData(news: news)
+                                    }
+                                    
                                 }
                             }
                         }
@@ -64,19 +72,7 @@ struct ExploreView: View {
                     .listRowSeparator(.hidden)
                     .listStyle(.plain)
                 }
-                .navigationDestination(for: AppRoute.self) { route in
-                    switch route {
-                        case .newsDetail(let article):
-                            NewsDetails(
-                                news: article,
-                                viewModel: $viewModel
-                        )
-                    case .newsDetailSaved(let articles):
-                        NewsDetails(
-                            news: Articles(savedArticle: articles),
-                            viewModel: $viewModel)
-                    }
-                }
+                
             }
             .navigationTitle(AppMessages.textExplore)
             .navigationBarTitleDisplayMode(.large)

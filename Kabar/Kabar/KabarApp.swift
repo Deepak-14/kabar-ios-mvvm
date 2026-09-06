@@ -34,6 +34,8 @@ struct KabarApp: App {
     // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var appState = AppState()
+    @State private var viewModel: HomeViewModel = HomeViewModel(apiService: NetworkManager())
+
 
     var body: some Scene {
         WindowGroup {
@@ -41,5 +43,6 @@ struct KabarApp: App {
         }
         .modelContainer(for: NewsArticleSave.self)
         .environment(appState)
+        .environment(viewModel)
     }
 }

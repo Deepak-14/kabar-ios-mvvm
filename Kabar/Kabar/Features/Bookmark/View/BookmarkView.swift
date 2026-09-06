@@ -66,19 +66,7 @@ struct BookmarkView: View {
                 .navigationBarBackButtonHidden(true)
             }
             .navigationTitle(AppMessages.textBookMark)
-            .navigationDestination(for: AppRoute.self) { route in
-                switch route {
-                    case .newsDetail(let article):
-                        NewsDetails(
-                            news: article,
-                            viewModel: $viewModel
-                    )
-                case .newsDetailSaved(let article):
-                    NewsDetails(
-                        news: Articles(savedArticle: article),
-                        viewModel: $viewModel)
-                }
-            }
+            
         .onAppear{
             dbModel.setModelContext(dbContext)
             dbModel.fetchAllNews()
